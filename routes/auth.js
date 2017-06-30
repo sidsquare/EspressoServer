@@ -8,9 +8,13 @@ var CLIENT_ID = '416659312336-ua27o7703vikdi3t0keahuvg8iqkk620.apps.googleuserco
 
 var mysql = require('mysql');
 var con = mysql.createConnection({
-	host: "localhost",
+	/*host: "localhost",
 	user: "root",
-	password: "28julius9"
+	password: "28julius9"*/
+	host     : process.env.RDS_HOSTNAME,
+  user     : process.env.RDS_USERNAME,
+  password : process.env.RDS_PASSWORD,
+  port     : process.env.RDS_PORT
 });
 
 con.connect(function(err){

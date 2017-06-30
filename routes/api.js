@@ -3,9 +3,13 @@ var router = express.Router();
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-	host: "localhost",
+	/*host: "localhost",
 	user: "root",
-	password: "28julius9"
+	password: "28julius9"*/
+	host     : process.env.RDS_HOSTNAME,
+  user     : process.env.RDS_USERNAME,
+  password : process.env.RDS_PASSWORD,
+  port     : process.env.RDS_PORT
 });
 
 var fs = require('fs');
@@ -215,8 +219,5 @@ function correctElevationInternal(json, fileName, callback){
 		callback(err, elevationList, largest, smallest);
 	});
 }
-
-
-
 
 module.exports = router;
