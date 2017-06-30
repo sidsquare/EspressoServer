@@ -7,9 +7,19 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var api = require('./routes/api');
+var auth = require('./routes/auth');
+var test = require('./routes/test');
+var error = require('./routes/error');
+
+var mkdirp = require('mkdirp');
+mkdirp('/runs', function(err) { 
+	console.log(err);
+});
 
 var app = express();
 
+var PORT= 8081
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -24,7 +34,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
-
+app.use('/api',api);
+app.use('/auth',auth);
+app.use('/test',test);
+app.use('./error', error);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -43,8 +56,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(8081, function(){
-	console.log('server running on 8081');
+app.listen(PORT, function(){
+	console.log('server running on '+PORT);
 });
 
 module.exports = app;
