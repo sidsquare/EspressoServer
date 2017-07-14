@@ -14,7 +14,7 @@ var con = mysql.createConnection({
 });
 
 var fs = require('fs');
-var DIR = './runs'
+var DIR = '/tmp'
 	
 con.connect(function(err){
 	if(err){
