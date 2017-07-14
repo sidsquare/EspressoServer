@@ -3,8 +3,8 @@ branch-defaults:
     environment: Sample-env
 environment-defaults:
   Sample-env:
-    branch: master
-    repository: espresso
+    branch: null
+    repository: null
 global:
   application_name: Espresso Server
   default_ec2_keyname: null
