@@ -132,7 +132,7 @@ router.post('/getRun', function(req,res,next){
 						if(err == null){
 							console.log('file exists');
 							//res.send({'status':0});
-						}
+						}});
 						fs.readFile(file,'utf8', function(err, data){
 							console.log(data);
 							res.send(data);
