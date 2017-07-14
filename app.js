@@ -13,7 +13,7 @@ var test = require('./routes/test');
 var error = require('./routes/error');
 
 var mkdirp = require('mkdirp');
-mkdirp('/runs', function(err) { 
+mkdirp('./runs', function(err) { 
 	console.log(err);
 });
 
