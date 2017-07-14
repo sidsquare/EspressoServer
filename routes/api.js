@@ -5,8 +5,7 @@ var mysql = require('mysql');
 var con = mysql.createConnection({
 	/*host: "localhost",
 	user: "root",
-	password: "28julius9"
-	*/
+	password: "28julius9"*/
 	host     : process.env.RDS_HOSTNAME,
   user     : process.env.RDS_USERNAME,
   password : process.env.RDS_PASSWORD,
@@ -14,7 +13,7 @@ var con = mysql.createConnection({
 });
 
 var fs = require('fs');
-var DIR = '/tmp'
+var DIR = '/tmp/'
 	
 con.connect(function(err){
 	if(err){
