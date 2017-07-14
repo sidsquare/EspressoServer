@@ -14,7 +14,6 @@
     "google-auth-library": "^0.10.0",
     "googleapis": "^19.0.0",
     "jade": "~1.11.0",
-    "mkdirp": "^0.5.1",
     "morgan": "~1.8.1",
     "mysql": "^2.13.0",
     "serve-favicon": "~2.4.2"
