@@ -3,17 +3,22 @@ var router = express.Router();
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-	/*host: "localhost",
+	host: "localhost",
 	user: "root",
-	password: "28julius9"*/
-	host     : process.env.RDS_HOSTNAME,
+	password: "28julius9"
+	/*host     : process.env.RDS_HOSTNAME,
   user     : process.env.RDS_USERNAME,
   password : process.env.RDS_PASSWORD,
-  port     : process.env.RDS_PORT
+  port     : process.env.RDS_PORT*/
 });
 
 var fs = require('fs');
-var DIR = '/tmp/'
+
+var AWS = require('aws-sdk'),
+ s3 = new AWS.S3({
+   region : 'US West (Oregon)' 
+ });
+
 	
 con.connect(function(err){
 	if(err){
@@ -27,15 +32,19 @@ con.connect(function(err){
 router.post('/addRun',function(req,res,next){
 	console.log('recieved a request');
 	console.log(req.body);
+	s3.getObject(params, function(err, data) {
+	   console.log(err, err.stack); // an error occurred
+	  else     console.log(data);           // successful response
+	});
 	var file = DIR+req.body.userID+'#'+req.body.activityID+'.json';
 
 	var fileData = req.body;
-	
-	fs.stat(file, function(err, stat){
+	params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
+	s3.getObject(params, function(err, data) {
 		if(err == null){
 			console.log('file exists');
 			res.send({'status':0});
-		}else if(err.code == 'ENOENT'){
+		}else{
 			correctElevationInternal(fileData, file, function(err, elevationList, largest, smallest){
 				if(err){
 					console.log(err);
@@ -127,12 +136,14 @@ router.post('/getRun', function(req,res,next){
 						res.send("{}");
 					}else{
 						var file = DIR+req.body.userID+'#'+req.body.activityID+'.json';
-						fs.stat(file, function(err, stat){
+						params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
+						s3.getObject(params, function(err, data) {
 						if(err == null){
 							console.log('file exists');
 							//res.send({'status':0});
 						}});
-						fs.readFile(file,'utf8', function(err, data){
+						params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
+						s3.getObject(params, function(err, data) {
 							//console.log(data);
 							res.send(data);
 						});
@@ -140,7 +151,8 @@ router.post('/getRun', function(req,res,next){
 				})
 			}else{
 				var file = DIR+req.body.userID+'#'+req.body.activityID+'.json';
-				fs.readFile(file,'utf8', function(err, data){
+				params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
+				s3.getObject(params, function(err, data) {
 					console.log(data);
 					res.send(data);
 				});
