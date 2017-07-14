@@ -133,7 +133,7 @@ router.post('/getRun', function(req,res,next){
 							//res.send({'status':0});
 						}});
 						fs.readFile(file,'utf8', function(err, data){
-							console.log(data);
+							//console.log(data);
 							res.send(data);
 						});
 					}
