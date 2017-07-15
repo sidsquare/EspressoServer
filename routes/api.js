@@ -3,22 +3,20 @@ var router = express.Router();
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-	host: "localhost",
+	/*host: "localhost",
 	user: "root",
-	password: "28julius9"
-	/*host     : process.env.RDS_HOSTNAME,
+	password: "28julius9"*/
+	host     : process.env.RDS_HOSTNAME,
   user     : process.env.RDS_USERNAME,
   password : process.env.RDS_PASSWORD,
-  port     : process.env.RDS_PORT*/
+  port     : process.env.RDS_PORT
 });
 
 var fs = require('fs');
 
-var AWS = require('aws-sdk'),
- s3 = new AWS.S3({
-   region : 'US West (Oregon)' 
- });
-
+var AWS = require('aws-sdk');
+AWS.config.loadFromPath('./config.json'); 
+var s3 = new AWS.S3();
 	
 con.connect(function(err){
 	if(err){
@@ -32,11 +30,8 @@ con.connect(function(err){
 router.post('/addRun',function(req,res,next){
 	console.log('recieved a request');
 	console.log(req.body);
-	s3.getObject(params, function(err, data) {
-	   console.log(err, err.stack); // an error occurred
-	  else     console.log(data);           // successful response
-	});
-	var file = DIR+req.body.userID+'#'+req.body.activityID+'.json';
+	
+	var file = 'runs/'+req.body.userID+'#'+req.body.activityID+'.json';
 
 	var fileData = req.body;
 	params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
@@ -51,7 +46,6 @@ router.post('/addRun',function(req,res,next){
 					res.send({'status':1});
 				}
 				else{
-					
 					console.log('file written ');
 					//for(var x=0;x< req.body.data.length;x++)
 						//console.log(req.body.data[x].altitude);
@@ -90,9 +84,9 @@ router.post('/addRun',function(req,res,next){
 						if(err)
 							console.log(err);
 					});
+					res.send("{'status':0,'max':"+largest+",'min':"+smallest+",'activityID':"+req.body.activityID+",'elevationCorrection':["+elevationList+"]}");
 				}
 				//console.log('result '+ elevationList);
-				res.send("{'status':0,'max':"+largest+",'min':"+smallest+",'activityID':"+req.body.activityID+",'elevationCorrection':["+elevationList+"]}");
 			});
 		}
 	});
@@ -135,26 +129,23 @@ router.post('/getRun', function(req,res,next){
 						console.log(err);
 						res.send("{}");
 					}else{
-						var file = DIR+req.body.userID+'#'+req.body.activityID+'.json';
 						params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
 						s3.getObject(params, function(err, data) {
-						if(err == null){
-							console.log('file exists');
-							//res.send({'status':0});
-						}});
-						params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
-						s3.getObject(params, function(err, data) {
-							//console.log(data);
-							res.send(data);
+							if(err)
+								console.log(err);
+							console.log(data.Body.toString('utf-8'));
+							res.send(data.Body.toString('utf-8'));
 						});
 					}
 				})
 			}else{
-				var file = DIR+req.body.userID+'#'+req.body.activityID+'.json';
+				//var file = DIR+req.body.userID+'#'+req.body.activityID+'.json';
 				params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
 				s3.getObject(params, function(err, data) {
-					console.log(data);
-					res.send(data);
+					if(err)
+						console.log(err);
+					console.log(data.Body.toString('utf-8'));
+					res.send(data.Body.toString('utf-8'));
 				});
 			}
 		}
@@ -232,9 +223,13 @@ function correctElevationInternal(json, fileName, callback){
 	}
 	json.max_altitude = largest;
 	json.min_altitude = smallest;
-	fs.writeFile(fileName, JSON.stringify(json), function(err){
+	params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: fileName, Body: JSON.stringify(json)};
+	s3.putObject(params, function(err, data) {
+		if(err)
+			console.log(err);
 		callback(err, elevationList, largest, smallest);
 	});
+		
 }
 
 module.exports = router;
