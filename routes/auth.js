@@ -4,14 +4,14 @@ var router = express.Router();
 var google = require('googleapis');
 var GoogleAuth = require('google-auth-library');
 var auth = new GoogleAuth;
-var CLIENT_ID = '416659312336-ua27o7703vikdi3t0keahuvg8iqkk620.apps.googleusercontent.com'
+
+require('dotenv').config()
+
+var CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 
 var mysql = require('mysql');
 var con = mysql.createConnection({
-	/*host: "localhost",
-	user: "root",
-	password: "28julius9"
-	*/host     : process.env.RDS_HOSTNAME,
+	host     : process.env.RDS_HOSTNAME,
   user     : process.env.RDS_USERNAME,
   password : process.env.RDS_PASSWORD,
   port     : process.env.RDS_PORT

@@ -12,6 +12,7 @@ var auth = require('./routes/auth');
 var test = require('./routes/test');
 var error = require('./routes/error');
 
+require('dotenv').config()
 
 var app = express();
 

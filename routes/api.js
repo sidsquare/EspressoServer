@@ -2,10 +2,9 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 
+require('dotenv').config()
+
 var con = mysql.createConnection({
-	/*host: "localhost",
-	user: "root",
-	password: "28julius9"*/
 	host     : process.env.RDS_HOSTNAME,
   user     : process.env.RDS_USERNAME,
   password : process.env.RDS_PASSWORD,
@@ -15,11 +14,16 @@ var con = mysql.createConnection({
 var fs = require('fs');
 
 var AWS = require('aws-sdk');
-AWS.config.loadFromPath('./config.json'); 
+AWS.config.update({
+	"accessKeyId": process.env.ACCESS_KEY_ID,
+	"secretAccessKey": process.env.SECRET_ACCESS_KEY,
+	"region": process.env.REGION
+})
 var s3 = new AWS.S3();
 	
 con.connect(function(err){
 	if(err){
+		console.log("&"+process.env.RDS_PASSWORD+"&");
 		console.log('mysql connection error '+err);
 		throw(err);
 	}
@@ -34,7 +38,7 @@ router.post('/addRun',function(req,res,next){
 	var file = 'runs/'+req.body.userID+'#'+req.body.activityID+'.json';
 
 	var fileData = req.body;
-	params={Bucket: 'elasticbeanstalk-ap-south-1-684694330127', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
+	params={Bucket: process.env.S3_BASE_URL, Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
 	s3.getObject(params, function(err, data) {
 		if(err == null){
 			console.log('file exists');
@@ -129,7 +133,7 @@ router.post('/getRun', function(req,res,next){
 						console.log(err);
 						res.send("{}");
 					}else{
-						params={Bucket: 'elasticbeanstalk-ap-south-1-684694330127', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
+						params={Bucket: process.env.S3_BASE_URL, Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
 						s3.getObject(params, function(err, data) {
 							if(err)
 								console.log(err);
@@ -140,7 +144,7 @@ router.post('/getRun', function(req,res,next){
 				})
 			}else{
 				//var file = DIR+req.body.userID+'#'+req.body.activityID+'.json';
-				params={Bucket: 'elasticbeanstalk-ap-south-1-684694330127', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
+				params={Bucket: process.env.S3_BASE_URL, Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
 				s3.getObject(params, function(err, data) {
 					if(err)
 						console.log(err);
@@ -223,7 +227,7 @@ function correctElevationInternal(json, fileName, callback){
 	}
 	json.max_altitude = largest;
 	json.min_altitude = smallest;
-	params={Bucket: 'elasticbeanstalk-ap-south-1-684694330127', Key: fileName, Body: JSON.stringify(json)};
+	params={Bucket: process.env.S3_BASE_URL, Key: fileName, Body: JSON.stringify(json)};
 	s3.putObject(params, function(err, data) {
 		if(err)
 			console.log(err);

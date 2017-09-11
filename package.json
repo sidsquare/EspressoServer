@@ -10,6 +10,7 @@
     "body-parser": "^1.17.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
+    "dotenv": "^4.0.0",
     "egm96": "0.0.1",
     "express": "~4.15.2",
     "google-auth-library": "^0.10.0",
