@@ -1,19 +1,16 @@
 branch-defaults:
   master:
-    environment: Sample-env
-environment-defaults:
-  Sample-env:
-    branch: null
-    repository: null
+    environment: dev-env
 global:
-  application_name: Espresso Server
+  application_name: Espresso
+  branch: null
   default_ec2_keyname: null
-  default_platform: arn:aws:elasticbeanstalk:us-west-2::platform/Node.js running on
-    64bit Amazon Linux/4.1.0
-  default_region: us-west-2
+  default_platform: Node.js
+  default_region: ap-south-1
   instance_profile: null
   platform_name: null
   platform_version: null
   profile: eb-cli
+  repository: null
   sc: git
   workspace_type: Application

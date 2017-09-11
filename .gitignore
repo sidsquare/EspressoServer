@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 # Elastic Beanstalk Files.elasticbeanstalk/*!.elasticbeanstalk/*.cfg.yml!.elasticbeanstalk/*.global.yml
 node_modules/
+config.json
 =======
 # Logs
 logs
@@ -62,3 +63,4 @@ typings/
 .env
 
 >>>>>>> 005180ec16cb09fcb4278032a81ac183a6767abd
+# Elastic Beanstalk Files.elasticbeanstalk/*!.elasticbeanstalk/*.cfg.yml!.elasticbeanstalk/*.global.yml

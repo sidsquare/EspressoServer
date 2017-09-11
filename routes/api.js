@@ -3,13 +3,13 @@ var router = express.Router();
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-	host: "localhost",
+	/*host: "localhost",
 	user: "root",
-	password: "28julius9"
-	/*host     : process.env.RDS_HOSTNAME,
+	password: "28julius9"*/
+	host     : process.env.RDS_HOSTNAME,
   user     : process.env.RDS_USERNAME,
   password : process.env.RDS_PASSWORD,
-  port     : process.env.RDS_PORT*/
+  port     : process.env.RDS_PORT
 });
 
 var fs = require('fs');
@@ -34,7 +34,7 @@ router.post('/addRun',function(req,res,next){
 	var file = 'runs/'+req.body.userID+'#'+req.body.activityID+'.json';
 
 	var fileData = req.body;
-	params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
+	params={Bucket: 'elasticbeanstalk-ap-south-1-684694330127', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
 	s3.getObject(params, function(err, data) {
 		if(err == null){
 			console.log('file exists');
@@ -129,7 +129,7 @@ router.post('/getRun', function(req,res,next){
 						console.log(err);
 						res.send("{}");
 					}else{
-						params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
+						params={Bucket: 'elasticbeanstalk-ap-south-1-684694330127', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
 						s3.getObject(params, function(err, data) {
 							if(err)
 								console.log(err);
@@ -140,7 +140,7 @@ router.post('/getRun', function(req,res,next){
 				})
 			}else{
 				//var file = DIR+req.body.userID+'#'+req.body.activityID+'.json';
-				params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
+				params={Bucket: 'elasticbeanstalk-ap-south-1-684694330127', Key: 'runs/'+req.body.userID+'#'+req.body.activityID+'.json'};
 				s3.getObject(params, function(err, data) {
 					if(err)
 						console.log(err);
@@ -223,7 +223,7 @@ function correctElevationInternal(json, fileName, callback){
 	}
 	json.max_altitude = largest;
 	json.min_altitude = smallest;
-	params={Bucket: 'elasticbeanstalk-us-west-2-065955691922', Key: fileName, Body: JSON.stringify(json)};
+	params={Bucket: 'elasticbeanstalk-ap-south-1-684694330127', Key: fileName, Body: JSON.stringify(json)};
 	s3.putObject(params, function(err, data) {
 		if(err)
 			console.log(err);

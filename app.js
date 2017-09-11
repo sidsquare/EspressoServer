@@ -15,6 +15,8 @@ var error = require('./routes/error');
 
 var app = express();
 
+app.set('trust proxy', 2)
+
 var PORT= 8081
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,7 +37,14 @@ app.use('/auth',auth);
 app.use('/test',test);
 app.use('./error', error);
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
+  var ip =req.headers['x-forwarded-for'] || 
+     req.connection.remoteAddress || 
+     req.socket.remoteAddress ||
+     req.connection.socket.remoteAddress;
+  console.log('Request from IP address:', ip);
+  console.log('Request from IP address:', req.ip);
+  console.log('Request from IP address:', req.ips);
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -51,9 +60,22 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
+*/
 app.listen(PORT, function(){
 	console.log('server running on '+PORT);
 });
+
+//sinkhole
+app.all('*',function(req, res){
+  var ip =req.headers['x-forwarded-for'] || 
+     req.connection.remoteAddress || 
+     req.socket.remoteAddress ||
+     req.connection.socket.remoteAddress;
+  console.log('Request from IP address:', ip);
+  console.log('Request from IP address:', req.ip);
+  console.log('Request from IP address:', req.ips);
+  res.send('This is not the reward that you were promised');
+})
+
 
 module.exports = app;
