@@ -1,4 +1,6 @@
 branch-defaults:
+  githubBranch:
+    environment: dev-env
   master:
     environment: dev-env
 global:
