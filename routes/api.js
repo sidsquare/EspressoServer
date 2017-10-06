@@ -64,7 +64,9 @@ router.post('/addRun',function(req,res,next){
 						+","+req.body.altitude_dif
 						+","+req.body.calories
 						+","+req.body.is_weather_available
-						+","+req.body.is_synced+")";
+						+","+req.body.is_synced
+						+",'"+req.body.route_used
+						+"','"+req.body.plan_used+"'')";
 
 						if(req.body.is_weather_available==1){
 							var queryString2 = "INSERT INTO espresso_database.weather_details VALUES ('"+req.body.userID
@@ -195,12 +197,13 @@ router.post('/addRoute', function(req, res){
 	var file = 'routes/'+req.body.userID+'#'+req.body.routeID+'.json';
 
 	var fileData = req.body;
-	params={Bucket: process.env.S3_BASE_URL
+	/*params={Bucket: process.env.S3_BASE_URL
 		, Key: 'routes/'+req.body.userID+'#'+req.body.routeID+'.json'};
 	s3.getObject(params, function(err, data) {
 		if(err == null){
 			console.log('file exists ');
-		}else{
+		}else{*/
+			// Write file unconditionally
 			params={Bucket: process.env.S3_BASE_URL
 				,  Key: 'routes/'+req.body.userID+'#'+req.body.routeID+'.json'
 				, Body: JSON.stringify(req.body)};
@@ -212,8 +215,8 @@ router.post('/addRoute', function(req, res){
 			});
 					//for(var x=0;x< req.body.data.length;x++)
 						//console.log(req.body.data[x].altitude);
-		}
-	});
+		/*}
+	});*/
 
 	var queryString = "INSERT INTO espresso_database.route_details VALUES ('"+req.body.userID
 		+"','"+req.body.routeID
@@ -332,12 +335,13 @@ router.post('/addPlan', function(req, res){
 	var file = 'plans/'+req.body.userID+'#'+req.body.planID+'.json';
 
 	var fileData = req.body;
-	params={Bucket: process.env.S3_BASE_URL
+	/*params={Bucket: process.env.S3_BASE_URL
 		, Key: 'plans/'+req.body.userID+'#'+req.body.planID+'.json'};
 	s3.getObject(params, function(err, data) {
 		if(err == null){
 			console.log('file exists ');
-		}else{
+		}else{*/
+			// Write file unconditionally
 			params={Bucket: process.env.S3_BASE_URL
 				,  Key: 'plans/'+req.body.userID+'#'+req.body.planID+'.json'
 				, Body: JSON.stringify(req.body)};
@@ -349,8 +353,8 @@ router.post('/addPlan', function(req, res){
 			});
 					//for(var x=0;x< req.body.data.length;x++)
 						//console.log(req.body.data[x].altitude);
-		}
-	});
+		/*}
+	});*/
 
 	var queryString = "INSERT INTO espresso_database.plan_details VALUES ('"+req.body.userID
 		+"','"+req.body.planID
